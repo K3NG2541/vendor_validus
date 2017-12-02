@@ -1,5 +1,19 @@
 LOCAL_PATH := $(call my-dir)
 
+# Set healthd_density to the density bucket of the device.
+healthd_density := unknown
+ifneq (,$(TARGET_RECOVERY_DENSITY))
+healthd_density := $(filter %dpi,$(TARGET_RECOVERY_DENSITY))
+else
+ifneq (,$(PRODUCT_AAPT_PREF_CONFIG))
+# If PRODUCT_AAPT_PREF_CONFIG includes a dpi bucket, then use that value.
+healthd_density := $(filter %dpi,$(PRODUCT_AAPT_PREF_CONFIG))
+else
+# Otherwise, use the default medium density.
+healthd_density := mdpi
+endif
+endif
+
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := healthd_board_cm.cpp
 LOCAL_MODULE := libhealthd.cm
